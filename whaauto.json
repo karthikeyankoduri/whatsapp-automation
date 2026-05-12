@@ -1,0 +1,818 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "id-1",
+              "leftValue": "={{ $('Extract Webhook Data1').item.json.has_image }}",
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "fa83438e-48c0-45c3-aa1c-5d2c8dd55311",
+      "name": "Check If Has Image",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -880,
+        2016
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "phone",
+              "value": "={{ $json.phone }}",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "message",
+              "value": "={{ $json.message }}",
+              "type": "string"
+            },
+            {
+              "id": "id-3",
+              "name": "campaign_id",
+              "value": "={{ $json.campaign_id }}",
+              "type": "string"
+            },
+            {
+              "id": "id-4",
+              "name": "batch_id",
+              "value": "={{ $json.batch_id }}",
+              "type": "string"
+            },
+            {
+              "id": "id-5",
+              "name": "name",
+              "value": "={{ $json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "id-6",
+              "name": "row_number",
+              "value": "={{ $json.row_number }}",
+              "type": "string"
+            },
+            {
+              "id": "id-7",
+              "name": "image_filename",
+              "value": "={{ $('Extract Webhook Data1').item.json.image_filename }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "c343f559-6364-4e93-8d5b-c1d92ca9097e",
+      "name": "Prepare Message With Image",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -656,
+        2112
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "phone",
+              "value": "={{ $json.phone }}",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "message",
+              "value": "={{ $json.message }}",
+              "type": "string"
+            },
+            {
+              "id": "id-3",
+              "name": "campaign_id",
+              "value": "={{ $json.campaign_id }}",
+              "type": "string"
+            },
+            {
+              "id": "id-4",
+              "name": "batch_id",
+              "value": "={{ $json.batch_id }}",
+              "type": "string"
+            },
+            {
+              "id": "id-5",
+              "name": "name",
+              "value": "={{ $json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "id-6",
+              "name": "row_number",
+              "value": "={{ $json.row_number }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "0f6b5b5d-3fb1-4778-af6c-4bcfec598835",
+      "name": "Prepare Message Text Only",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -656,
+        1920
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://wasenderapi.com/api/send-message",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "to",
+              "value": "={{ $json.phone }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ $json.message }}"
+            },
+            {
+              "parameterType": "formBinaryData",
+              "name": "image",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "27a66142-6626-42c8-91d7-5bd195164a04",
+      "name": "Send WhatsApp With Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -432,
+        2112
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://wasenderapi.com/api/send-message",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "to",
+              "value": "={{ $json.phone }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ $json.message }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3ba11d23-33a7-4b2d-83b4-9d09c65a9738",
+      "name": "Send WhatsApp Text Only",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -432,
+        1920
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "campaign-trigger",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "06b743ac-8438-478a-abf0-679bc6139c5a",
+      "name": "New Campaign Trigger2",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -2000,
+        2112
+      ],
+      "webhookId": "ba4519aa-e1ef-4c7b-854a-6c79af4f021f"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "f8044f57-fffd-438c-a3a9-f8f6be5b5a09",
+      "name": "Split Into Batches1",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -1328,
+        2112
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-2",
+              "name": "phone",
+              "value": "={{ $json.contacts.phone.replace('p:', '').replace(/\\s+/g, '') }}",
+              "type": "string"
+            },
+            {
+              "id": "id-3",
+              "name": "message",
+              "value": "={{ $json.contacts.personalized_message }}",
+              "type": "string"
+            },
+            {
+              "id": "id-4",
+              "name": "campaign_id",
+              "value": "={{ $('Extract Webhook Data1').item.json.campaign_id }}",
+              "type": "string"
+            },
+            {
+              "id": "id-5",
+              "name": "batch_id",
+              "value": "={{ $('Extract Webhook Data1').item.json.batch_id }}",
+              "type": "string"
+            },
+            {
+              "id": "id-7",
+              "name": "name",
+              "value": "={{ $json.contacts.name }}",
+              "type": "string"
+            },
+            {
+              "id": "id-8",
+              "name": "row_number",
+              "value": "={{ $json.contacts.row_number }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8681b71d-f3bb-4a1e-972f-bf94033da62e",
+      "name": "Personalize Message1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1104,
+        2016
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 4
+      },
+      "id": "ed960f28-9109-49ba-9910-11fa6b039bb4",
+      "name": "Delay Between Messages2",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -208,
+        2208
+      ],
+      "webhookId": "882dde18-1932-4a40-8934-a571e10eb5e9"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "campaign_id",
+              "value": "={{ $('Personalize Message1').item.json.campaign_id }}",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "batch_id",
+              "value": "={{ $('Personalize Message1').item.json.batch_id }}",
+              "type": "string"
+            },
+            {
+              "id": "id-3",
+              "name": "name",
+              "value": "={{ $('Personalize Message1').item.json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "id-4",
+              "name": "phone",
+              "value": "={{ $('Personalize Message1').item.json.phone }}",
+              "type": "string"
+            },
+            {
+              "id": "id-5",
+              "name": "row_number",
+              "value": "={{ $('Personalize Message1').item.json.row_number }}",
+              "type": "string"
+            },
+            {
+              "id": "id-6",
+              "name": "error_message",
+              "value": "={{ $json.error.message }}",
+              "type": "string"
+            },
+            {
+              "id": "id-7",
+              "name": "failed_at",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "39145404-7705-4ebf-85f5-e32b6c049dc7",
+      "name": "Prepare Error Log2",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -656,
+        2304
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "12fga-Rsgvn9DFc0ZnE3JaLjadVbLgzBzQw8q8zLs1ZQ",
+          "mode": "list",
+          "cachedResultName": "failed",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12fga-Rsgvn9DFc0ZnE3JaLjadVbLgzBzQw8q8zLs1ZQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12fga-Rsgvn9DFc0ZnE3JaLjadVbLgzBzQw8q8zLs1ZQ/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "campaign_id": "={{ $json.campaign_id }}",
+            "batch_id": "={{ $json.batch_id }}",
+            "phone": "={{ $json.phone }}",
+            "error_message": "={{ $json.error_message }}",
+            "failed_at": "={{ $json.failed_at }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "campaign_id",
+              "displayName": "campaign_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "batch_id",
+              "displayName": "batch_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "error_message",
+              "displayName": "error_message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "failed_at",
+              "displayName": "failed_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "c935f10e-f6bb-4d2d-9924-5963303d24a9",
+      "name": "Log Message Failure2",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -432,
+        2304
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "15NBcuhIc0b8VgTOExUcBALFmYPROsFD0qnFEe_5UJVs",
+          "mode": "list",
+          "cachedResultName": "success",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15NBcuhIc0b8VgTOExUcBALFmYPROsFD0qnFEe_5UJVs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15NBcuhIc0b8VgTOExUcBALFmYPROsFD0qnFEe_5UJVs/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.id }}",
+            "status": "={{ $json.status }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "b477ff88-c1d1-4320-974b-9828164e05e2",
+      "name": "Update Campaign Status1",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -880,
+        1824
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "campaign_id",
+              "value": "={{ JSON.parse($json.body.payload).campaign.id }}",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "batch_id",
+              "value": "={{ JSON.parse($json.body.payload).meta.batch_id }}",
+              "type": "string"
+            },
+            {
+              "id": "id-3",
+              "name": "message",
+              "value": "={{ JSON.parse($json.body.payload).campaign.message_template }}",
+              "type": "string"
+            },
+            {
+              "id": "id-4",
+              "name": "contacts",
+              "value": "={{ JSON.parse($json.body.payload).recipients }}",
+              "type": "array"
+            },
+            {
+              "id": "id-5",
+              "name": "image_url",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "id-6",
+              "name": "has_image",
+              "value": "={{ JSON.parse($json.body.payload).meta.has_image }}",
+              "type": "boolean"
+            },
+            {
+              "id": "id-7",
+              "name": "image_filename",
+              "value": "={{ JSON.parse($json.body.payload).meta.image_filename }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "884194ac-2c42-49fa-afb1-bca8aefc5f01",
+      "name": "Extract Webhook Data1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1776,
+        2112
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "contacts",
+        "include": "selectedOtherFields",
+        "fieldsToInclude": "campaign_id, batch_id, message",
+        "options": {}
+      },
+      "id": "4c709f00-957b-4ea3-90cc-f174462b191e",
+      "name": "Split Contacts Array1",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -1552,
+        2112
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "id",
+              "value": "={{ $('Extract Webhook Data1').item.json.campaign_id }}",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "status",
+              "value": "completed",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5f3ba071-8f8f-4c27-b764-da3dae4e63ed",
+      "name": "Prepare Status Update1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1104,
+        1824
+      ]
+    }
+  ],
+  "connections": {
+    "Check If Has Image": {
+      "main": [
+        [
+          {
+            "node": "Prepare Message With Image",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Prepare Message Text Only",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Message With Image": {
+      "main": [
+        [
+          {
+            "node": "Send WhatsApp With Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Message Text Only": {
+      "main": [
+        [
+          {
+            "node": "Send WhatsApp Text Only",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send WhatsApp With Image": {
+      "main": [
+        [
+          {
+            "node": "Delay Between Messages2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send WhatsApp Text Only": {
+      "main": [
+        [
+          {
+            "node": "Delay Between Messages2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "New Campaign Trigger2": {
+      "main": [
+        [
+          {
+            "node": "Extract Webhook Data1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Into Batches1": {
+      "main": [
+        [
+          {
+            "node": "Prepare Status Update1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Prepare Error Log2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Personalize Message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Personalize Message1": {
+      "main": [
+        [
+          {
+            "node": "Check If Has Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delay Between Messages2": {
+      "main": [
+        [
+          {
+            "node": "Split Into Batches1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Error Log2": {
+      "main": [
+        [
+          {
+            "node": "Log Message Failure2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Message Failure2": {
+      "main": [
+        [
+          {
+            "node": "Delay Between Messages2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Webhook Data1": {
+      "main": [
+        [
+          {
+            "node": "Split Contacts Array1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Contacts Array1": {
+      "main": [
+        [
+          {
+            "node": "Split Into Batches1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Status Update1": {
+      "main": [
+        [
+          {
+            "node": "Update Campaign Status1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a2123173c0849c1ebd16447d7122d1ff9eb42f1cb79e4bde22d27fa7c2f6582e"
+  }
+}
