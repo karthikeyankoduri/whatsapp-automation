@@ -199,6 +199,8 @@ The app sends a `POST` request with `multipart/form-data` content type containin
 ---
 
 ### n8n Workflow Setup
+<img width="1507" height="626" alt="image" src="https://github.com/user-attachments/assets/4fc7e216-6bd7-418c-aa11-a5b6144681de" />
+
 
 #### 1. Add a Webhook Node
 
